@@ -1,0 +1,26 @@
+# Render Blueprint for the Vibe-Trading backend (persistent FastAPI server).
+# Deploy: push this repo to GitHub, then in Render use "Blueprint" and point
+# it at this file, or create a new Web Service from the repo.
+#
+# Free tier notes:
+#   - Free web services sleep after 15 min of inactivity and wake on request.
+#   - The disk is ephemeral on free instances; use the Neon Postgres database
+#     (DATABASE_URL) for any state that must survive restarts.
+services:
+  - type: web
+    name: vibe-trading-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false # set manually to your Neon connection string
+      - key: POSTGRES_URL
+        sync: false
+      - key: VIBE_TRADING_ENABLE_SCHEDULER
+        value: "true"
+      - key: VIBE_TRADING_CHANNELS_AUTO_START
+        value: "false"
+      - key: PORT
+        value: "8899"
