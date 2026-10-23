@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { Activity, BarChart3, Bot, Languages, Moon, Sun, Plus, Trash2, Pencil, MessageSquare, ChevronsLeft, ChevronsRight, Settings, Layers, Loader2 } from "lucide-react";
+import { Activity, BarChart3, Bot, Languages, Moon, Sun, Plus, Trash2, Pencil, MessageSquare, ChevronsLeft, ChevronsRight, Settings, Layers, Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { logout } from "@/lib/auth";
 import { api, type SessionItem } from "@/lib/api";
 import { useAgentStore } from "@/stores/agent";
 import { ConnectionBanner } from "@/components/layout/ConnectionBanner";
@@ -219,6 +220,9 @@ export function Layout() {
               <button onClick={() => setCollapsed(false)} className="p-1.5 text-muted-foreground hover:text-foreground rounded transition-colors" title={t('layout.expand')}>
                 <ChevronsRight className="h-3.5 w-3.5" />
               </button>
+              <button onClick={() => { logout(); window.location.reload(); }} className="p-1.5 text-muted-foreground hover:text-danger rounded transition-colors" title="Cerrar sesión">
+                <Lock className="h-3.5 w-3.5" />
+              </button>
             </>
           ) : (
             <>
@@ -250,6 +254,14 @@ export function Layout() {
                 </button>
                 <p className="text-xs text-muted-foreground/60">{APP_VERSION}</p>
               </div>
+              <button
+                onClick={() => { logout(); window.location.reload(); }}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-danger transition-colors"
+                title="Cerrar sesión"
+              >
+                <Lock className="h-3.5 w-3.5" />
+                Cerrar sesión
+              </button>
             </>
           )}
         </div>

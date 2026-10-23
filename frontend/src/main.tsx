@@ -5,14 +5,19 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { router } from "./router";
+import { initApiAuth } from "./lib/apiAuth";
 import "highlight.js/styles/github-dark-dimmed.min.css";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ErrorBoundary>
-      <RouterProvider router={router} />
-      <Toaster position="bottom-right" richColors closeButton duration={3500} />
-    </ErrorBoundary>
-  </StrictMode>
-);
+// Descifra el API key almacenado y rellena la caché en memoria antes de montar
+// la app, para que las peticiones autenticadas funcionen desde el primer render.
+void initApiAuth().finally(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+        <Toaster position="bottom-right" richColors closeButton duration={3500} />
+      </ErrorBoundary>
+    </StrictMode>
+  );
+});

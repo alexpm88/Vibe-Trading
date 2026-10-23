@@ -1,6 +1,7 @@
 import { authHeaders, withAuthQuery } from "@/lib/apiAuth";
+import { API_BASE_URL } from "@/lib/config";
 
-const BASE = "";
+const BASE = API_BASE_URL;
 
 export class ApiError extends Error {
   status: number;

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Database, KeyRound, Loader2, RotateCcw, Save, Server, SlidersHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { api, isAuthRequiredError, type DataSourceSettings, type LLMProviderOption, type LLMSettings } from "@/lib/api";
-import { getApiAuthKey, setApiAuthKey } from "@/lib/apiAuth";
+import { getApiAuthKey, initApiAuth, setApiAuthKey } from "@/lib/apiAuth";
 
 interface LLMFormState {
   provider: string;
@@ -38,7 +38,16 @@ export function Settings() {
   const [dataSettings, setDataSettings] = useState<DataSourceSettings | null>(null);
   const [form, setForm] = useState<LLMFormState | null>(null);
   const [apiKey, setApiKey] = useState("");
-  const [localApiKey, setLocalApiKeyState] = useState(() => getApiAuthKey());
+  const [localApiKey, setLocalApiKeyState] = useState("");
+
+  // Carga la clave descifrada (initApiAuth rellena la caché en memoria).
+  useEffect(() => {
+    let alive = true;
+    initApiAuth().then(() => {
+      if (alive) setLocalApiKeyState(getApiAuthKey());
+    });
+    return () => { alive = false; };
+  }, []);
   const [clearApiKey, setClearApiKey] = useState(false);
   const [tushareToken, setTushareToken] = useState("");
   const [clearTushareToken, setClearTushareToken] = useState(false);
@@ -101,9 +110,9 @@ export function Settings() {
     setClearApiKey(false);
   };
 
-  const submitLocalApiKey = (event: FormEvent) => {
+  const submitLocalApiKey = async (event: FormEvent) => {
     event.preventDefault();
-    setApiAuthKey(localApiKey);
+    await setApiAuthKey(localApiKey);
     toast.success("Local API key saved");
     window.location.reload();
   };
