@@ -3,6 +3,14 @@
 # ============================================================================
 FROM node:20-slim AS frontend-build
 
+# Build-time Vite env vars for the login gate. These are inlined into the
+# bundle at build time, so they MUST be passed as build args (Render: set them
+# in the service's "Build" env vars, or via render.yaml build envVars).
+ARG VITE_APP_PASSWORD=""
+ARG VITE_APP_PASSWORD_HASH=""
+ENV VITE_APP_PASSWORD=$VITE_APP_PASSWORD \
+    VITE_APP_PASSWORD_HASH=$VITE_APP_PASSWORD_HASH
+
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --ignore-scripts

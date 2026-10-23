@@ -13,6 +13,15 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
+    # Build-time env vars for the frontend login gate. These are inlined into
+    # the Vite bundle at build time, so they must be set here (or in the
+    # service's Build env vars) BEFORE the image is built. Set either
+    # VITE_APP_PASSWORD (plain text) or VITE_APP_PASSWORD_HASH (SHA-256 hex).
+    buildEnvVars:
+      - key: VITE_APP_PASSWORD
+        sync: false # set manually to your desired login password
+      - key: VITE_APP_PASSWORD_HASH
+        sync: false # optional: SHA-256 hex of the password (preferred)
     envVars:
       - key: DATABASE_URL
         sync: false # set manually to your Neon connection string
